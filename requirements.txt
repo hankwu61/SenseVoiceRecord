@@ -1,0 +1,6 @@
+funasr
+torch
+torchaudio
+flask
+flask-cors
+opencc-python-reimplemented

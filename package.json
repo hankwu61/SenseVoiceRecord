@@ -1,0 +1,21 @@
+{
+  "name": "sensevoice-meeting-recorder",
+  "version": "1.0.0",
+  "description": "會議錄音助手 — 錄音、語音轉文字、會議摘要、代辦事項",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "npx nodemon server/index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "form-data": "^4.0.0",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^2.7.0",
+    "selfsigned": "^5.5.0",
+    "uuid": "^10.0.0"
+  }
+}

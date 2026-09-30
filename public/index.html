@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="會議錄音助手 — 錄音、語音轉文字、AI 會議摘要、代辦事項管理">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>會議錄音助手</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 頂部導航列 -->
+    <header class="app-header" id="app-header">
+      <div class="header-left">
+        <button class="btn-icon back-btn hidden" id="btn-back" aria-label="返回">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h1 class="app-title" id="app-title">
+          <span class="title-icon">🎙️</span>
+          <span class="title-text">會議錄音助手</span>
+        </h1>
+      </div>
+      <div class="header-right">
+        <div class="wake-lock-indicator hidden" id="wake-lock-indicator">
+          <span class="indicator-dot"></span>
+          <span class="indicator-text">螢幕常亮</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 底部導航 -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-item active" data-page="record" id="nav-record">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/></svg>
+        <span>錄音</span>
+      </button>
+      <button class="nav-item" data-page="meetings" id="nav-meetings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>會議</span>
+      </button>
+    </nav>
+
+    <!-- 頁面容器 -->
+    <main class="page-container" id="page-container">
+
+      <!-- ===== 錄音頁面 ===== -->
+      <section class="page active" id="page-record">
+        <div class="record-page">
+          <!-- 錄音模式選擇 -->
+          <div class="record-mode-selector" id="record-mode-selector">
+            <button class="mode-btn active" data-mode="mic" id="mode-mic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+              <span>麥克風</span>
+            </button>
+            <button class="mode-btn" data-mode="system" id="mode-system">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>系統音訊</span>
+            </button>
+            <button class="mode-btn" data-mode="mixed" id="mode-mixed">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              <span>混合模式</span>
+            </button>
+          </div>
+
+          <!-- 模式說明 -->
+          <div class="mode-description" id="mode-description">
+            <span class="mode-desc-text" id="mode-desc-text">擷取麥克風聲音</span>
+          </div>
+
+          <!-- 狀態文字 -->
+          <div class="record-status" id="record-status">
+            <span class="status-text">準備錄音</span>
+          </div>
+
+          <!-- 音波視覺化 -->
+          <div class="visualizer-container">
+            <canvas id="visualizer" class="visualizer-canvas"></canvas>
+            <div class="record-timer" id="record-timer">00:00</div>
+          </div>
+
+          <!-- 錄音控制 -->
+          <div class="record-controls">
+            <button class="btn-record" id="btn-record" aria-label="開始錄音">
+              <div class="btn-record-inner">
+                <div class="record-icon" id="record-icon"></div>
+              </div>
+              <div class="btn-record-ring"></div>
+              <div class="btn-record-pulse"></div>
+            </button>
+          </div>
+
+          <div class="record-actions" id="record-actions">
+            <button class="btn-action hidden" id="btn-pause" aria-label="暫停">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span>暫停</span>
+            </button>
+            <button class="btn-action hidden" id="btn-stop" aria-label="停止並儲存">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              <span>停止</span>
+            </button>
+          </div>
+
+          <!-- 手機提示 -->
+          <div class="mobile-hint" id="mobile-hint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>錄音中請勿切換 App 或鎖定螢幕</span>
+          </div>
+
+          <!-- 系統音訊提示 (Windows) -->
+          <div class="system-audio-hint hidden" id="system-audio-hint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>系統音訊模式需選擇分享整個畫面或分頁，並勾選「分享系統音訊」</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 會議列表頁面 ===== -->
+      <section class="page" id="page-meetings">
+        <div class="meetings-page">
+          <div class="meetings-header">
+            <h2>會議記錄</h2>
+            <div class="meetings-search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="search-input" placeholder="搜尋會議..." autocomplete="off">
+            </div>
+          </div>
+          <div class="meetings-list" id="meetings-list">
+            <!-- 動態填入 -->
+          </div>
+          <div class="empty-state hidden" id="empty-state">
+            <div class="empty-icon">📝</div>
+            <p>還沒有任何會議記錄</p>
+            <p class="empty-hint">點擊底部「錄音」開始你的第一次錄音</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 會議詳情頁面 ===== -->
+      <section class="page" id="page-detail">
+        <div class="detail-page" id="detail-content">
+          <!-- 動態填入 -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- 全域 Toast 通知 -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- 確認對話框 -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="modal-cancel">取消</button>
+        <button class="btn btn-danger" id="modal-confirm">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 上傳進度 -->
+  <div class="upload-overlay hidden" id="upload-overlay">
+    <div class="upload-modal">
+      <div class="upload-spinner"></div>
+      <p class="upload-text" id="upload-text">正在處理...</p>
+      <div class="upload-progress-bar">
+        <div class="upload-progress-fill" id="upload-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/wakelock.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/recorder.js"></script>
+  <script src="/js/meeting.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

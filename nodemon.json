@@ -1,0 +1,15 @@
+{
+  "watch": ["server"],
+  "ext": "js",
+  "ignore": [
+    "data/**",
+    "data/*",
+    "data/meetings/*",
+    "data/recordings/*",
+    "public/**",
+    "*.py",
+    "*.webm",
+    "*.wav",
+    "*.json"
+  ]
+}

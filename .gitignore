@@ -1,0 +1,9 @@
+node_modules/
+.env
+data/recordings/*
+data/meetings/*
+data/certs/*
+!data/recordings/.gitkeep
+!data/meetings/.gitkeep
+__pycache__/
+*.pyc
