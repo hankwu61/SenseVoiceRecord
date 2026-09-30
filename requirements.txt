@@ -1,6 +1,10 @@
-funasr
+# Core STT & API dependencies
+funasr>=1.4.0
+flask>=3.0.0
+flask-cors>=5.0.0
+opencc-python-reimplemented>=0.1.7
+
+# PyTorch & Torchaudio: 版本必須保持一致 (如 2.6.0)
+# CPU 建議指令: pip install torch==2.6.0+cpu torchaudio==2.6.0+cpu --index-url https://download.pytorch.org/whl/cpu
 torch
 torchaudio
-flask
-flask-cors
-opencc-python-reimplemented

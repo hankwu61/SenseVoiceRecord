@@ -35,11 +35,23 @@ Node.js 伺服器 (server/index.js)          Port 3000 (HTTP) / 3443 (HTTPS)
 
 ## 安裝
 
+### 1. 安裝 Node.js 套件
 ```bash
 npm install
 ```
 
+### 2. 安裝 Python 套件
+> **注意**：PyTorch 與 Torchaudio **版本必須完全相符**（例如同為 2.6.0），否則 Windows 下易出現 `[WinError 127] 找不到指定的程序`。
+
+**CPU 版本（推薦）：**
 ```bash
+pip install torch==2.6.0+cpu torchaudio==2.6.0+cpu --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+```
+
+**GPU (CUDA 12.1) 版本：**
+```bash
+pip install torch==2.6.0+cu121 torchaudio==2.6.0+cu121 --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 ```
 
@@ -165,3 +177,9 @@ STT 服務另有 `GET /health`（狀態檢查）與 `POST /transcribe`（欄位 
 
 **憑證警告一直出現**
 自簽憑證的正常現象，不影響功能。若想移除警告，可刪除 `data/certs/` 讓系統重新產生（新憑證會包含目前的區網 IP），並在手機上信任該憑證。
+
+**啟動 STT 服務出現 `[WinError 127] 找不到指定的程序`**
+這是因為 PyTorch 與 torchaudio 版本不一致導致動態庫載入失敗。請重新安裝與目前 `torch` 版本完全相符的 `torchaudio`，例如：
+```bash
+pip install torchaudio==2.6.0+cpu --index-url https://download.pytorch.org/whl/cpu
+```
